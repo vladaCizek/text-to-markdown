@@ -8,9 +8,16 @@
         @change="onFileChange"
         class="file-input file-input-bordered file-input-secondary w-full max-w-xs"
       />
-      <button type="submit" class="btn btn-primary" :disabled="!file">
-        Convert
-      </button>
+      <div class="text-center">
+        <button
+          type="submit"
+          class="btn btn-primary btn-lg"
+          :class="[isLoading ? 'loading loading-dots loading-xs' : '']"
+          :disabled="!file"
+        >
+          Convert
+        </button>
+      </div>
     </form>
   </div>
 </template>
@@ -22,24 +29,61 @@ import { useRouter } from "vue-router";
 const file = ref(null);
 const router = useRouter();
 
+const isLoading = ref(false);
+
 const onFileChange = (e) => {
   file.value = e.target.files[0];
 };
 
-const handleUpload = () => {
+const handleUpload = async () => {
   if (!file.value) {
     alert("Please select a .txt file to upload.");
     return;
   }
 
-  // Placeholder for file upload and conversion logic
-  // After conversion, navigate to the result page with the markdown content
+  const reader = new FileReader();
+  reader.onload = async () => {
+    const textContent = reader.result;
+    isLoading.value = true;
+    try {
 
-  // Example: Navigate with query parameters (for demonstration)
-  const markdownContent = "# Sample Markdown\n\nConverted content here...";
-  router.push({
-    name: "result",
-    query: { content: encodeURIComponent(markdownContent) },
-  });
+      const response = await fetch("/api/convert", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: textContent }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        alert(errorData.message || "Conversion failed.");
+        return;
+      }
+
+      const readerStream = response.body.getReader();
+      const decoder = new TextDecoder("utf-8");
+      let done = false;
+      let markdown = "";
+
+      while (!done) {
+        const { value, done: doneReading } = await readerStream.read();
+        done = doneReading;
+        if (value) {
+          markdown += decoder.decode(value, { stream: true });
+        }
+      }
+
+      // Display the Markdown (you can adjust this as needed)
+      router.push({
+        name: "result",
+        query: { content: encodeURIComponent(markdown) },
+      });
+    } catch (error) {
+      console.error("error: ", error);
+      alert("An error occurred during conversion.");
+    } finally {
+      isLoading.value = false;
+    }
+  };
+  reader.readAsText(file.value);
 };
 </script>
