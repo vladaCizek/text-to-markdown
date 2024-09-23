@@ -1,24 +1,27 @@
 <template>
-  <div class="container mx-auto p-4">
+  <div class="min-h-screen flex flex-col mx-auto p-4 text-center">
     <h1 class="text-2xl font-bold mb-4">Text to Markdown Converter</h1>
-    <form @submit.prevent="handleUpload" class="flex flex-col space-y-4">
-      <input
-        type="file"
-        accept=".txt"
-        @change="onFileChange"
-        class="file-input file-input-bordered file-input-secondary w-full max-w-xs"
-      />
-      <div class="text-center">
-        <button
-          type="submit"
-          class="btn btn-primary btn-lg"
-          :class="[isLoading ? 'loading loading-dots loading-xs' : '']"
-          :disabled="!file"
-        >
-          Convert
-        </button>
-      </div>
-    </form>
+
+    <div class="flex items-center justify-center flex-grow">
+      <form @submit.prevent="handleUpload" class="flex flex-col space-y-4">
+        <input
+          type="file"
+          accept=".txt"
+          @change="onFileChange"
+          class="file-input file-input-bordered file-input-secondary w-full max-w-xs"
+        />
+        <div class="text-center">
+          <button
+            type="submit"
+            class="btn btn-primary btn-lg"
+            :class="[isLoading ? 'loading loading-dots loading-xs' : '']"
+            :disabled="!file"
+          >
+            Convert
+          </button>
+        </div>
+      </form>
+    </div>
   </div>
 </template>
 
@@ -28,6 +31,7 @@ import { useRouter } from "vue-router";
 
 const file = ref(null);
 const router = useRouter();
+const snackbar = useSnackbar();
 
 const isLoading = ref(false);
 
@@ -46,7 +50,6 @@ const handleUpload = async () => {
     const textContent = reader.result;
     isLoading.value = true;
     try {
-
       const response = await fetch("/api/convert", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -55,7 +58,11 @@ const handleUpload = async () => {
 
       if (!response.ok) {
         const errorData = await response.json();
-        alert(errorData.message || "Conversion failed.");
+
+        snackbar.add({
+          type: "error",
+          text: errorData.message ?? "Conversion failed.",
+        });
         return;
       }
 
@@ -79,7 +86,10 @@ const handleUpload = async () => {
       });
     } catch (error) {
       console.error("error: ", error);
-      alert("An error occurred during conversion.");
+      snackbar.add({
+        type: "error",
+        text: error ?? "An error occurred during conversion.",
+      });
     } finally {
       isLoading.value = false;
     }

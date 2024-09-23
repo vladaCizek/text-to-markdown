@@ -1,0 +1,67 @@
+Project Description: Text-to-Markdown Converter
+Text-to-Markdown Converter is a web application built with Nuxt.js that enables users to effortlessly convert plain text (.txt) files into beautifully formatted Markdown (.md) files. Leveraging the power of OpenAI's GPT-4, the app provides both a downloadable Markdown file and a live preview within the application.
+
+Key Features:
+File Upload: Users can upload .txt files through an intuitive interface.
+Markdown Conversion: Utilizes OpenAI's GPT-4 to transform plain text into well-structured Markdown.
+Live Preview: Displays the converted Markdown in a viewer/editor for immediate feedback.
+File Download: Offers the option to download the generated .md file.
+Responsive Design: Styled with TailwindCSS and DaisyUI for a modern and responsive user experience.
+Secure Configuration: Manages sensitive API keys using environment variables, ensuring security and privacy.
+Technologies Used:
+Frontend:
+
+Nuxt.js: Framework for building server-rendered Vue.js applications.
+TailwindCSS: Utility-first CSS framework for rapid UI development.
+DaisyUI: TailwindCSS-based component library for enhanced UI components.
+Backend:
+
+OpenAI API: GPT-4 model for intelligent text-to-Markdown conversion.
+Formidable: Node.js library for handling file uploads.
+Others:
+
+Vercel: Recommended platform for deploying both frontend and backend seamlessly.
+Setup Instructions:
+Clone the Repository:
+
+bash
+Copy code
+git clone https://github.com/your-username/text-to-markdown.git
+cd text-to-markdown
+Install Dependencies:
+
+bash
+Copy code
+npm install
+Configure Environment Variables:
+
+Create a .env file in the root directory.
+Add your OpenAI API key:
+makefile
+Copy code
+OPENAI_API_KEY=your-openai-api-key
+Run the Development Server:
+
+bash
+Copy code
+npm run dev
+Access the app at http://localhost:3000.
+Deployment:
+Vercel is recommended for hosting the application, providing seamless integration for both frontend and backend services.
+Ensure to set environment variables (.env) securely in the Vercel dashboard.
+Usage:
+Upload a .txt File:
+
+Navigate to the home page.
+Select and upload your .txt file.
+Convert to Markdown:
+
+Click the Convert button.
+View the live Markdown preview.
+Download the .md File:
+
+Click the Download button to save the converted Markdown file to your device.
+License:
+This project is licensed under the MIT License.
+
+Feel free to contribute or raise issues for any enhancements or bugs. Enjoy converting your text files to Markdown effortlessly!
