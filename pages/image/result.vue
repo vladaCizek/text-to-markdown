@@ -4,7 +4,7 @@
       <div class="flex gap-4 mb-4">
         <button @click="goBack" class="btn btn-accent mt-4">Go Back</button>
         <button @click="downloadMarkdown" class="btn btn-secondary mt-4">
-          Download .md File
+          Download .txt File
         </button>
       </div>
       <h1 class="text-2xl font-bold mb-4">Converted Markdown</h1>
@@ -19,33 +19,37 @@
 
 <script setup>
 import { ref, onMounted } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute } from "nuxt/app";
 import MarkdownViewer from "@/components/MarkdownViewer.vue"; // You'll create this component
 
-const router = useRouter();
 const route = useRoute();
 const markdownContent = ref("");
+const documentName = ref("converted");
 
 onMounted(() => {
   const content = route.query.content;
+  const name = route.query.name;
   if (content) {
     markdownContent.value = decodeURIComponent(content);
+    if (name) {
+      documentName.value = decodeURIComponent(name).split(".")[0];
+    }
   } else {
     markdownContent.value = "No content available.";
   }
 });
 
 const downloadMarkdown = () => {
-  const blob = new Blob([markdownContent.value], { type: "text/markdown" });
+  const blob = new Blob([markdownContent.value], { type: "text/plain" });
   const url = URL.createObjectURL(blob);
   const link = document.createElement("a");
   link.href = url;
-  link.download = "converted.md";
+  link.download = `${documentName.value}.txt`;
   link.click();
   URL.revokeObjectURL(url);
 };
 
-function goBack() {
-  router.push("/");
+async function goBack() {
+  await navigateTo("/image");
 }
 </script>
