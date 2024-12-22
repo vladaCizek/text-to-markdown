@@ -7,7 +7,12 @@ export default defineNuxtConfig({
     openAiApiOrganizationId: process.env.OPENAI_API_ORGANIZATION_ID,
     openAiApiProjectId: process.env.OPENAI_API_PROJECT_ID,
   },
-  modules: ["@nuxtjs/tailwindcss", "nuxt-snackbar"],
+  modules: [
+    "@nuxtjs/tailwindcss",
+    "nuxt-snackbar",
+    "@nuxt/icon",
+    "@prisma/nuxt",
+  ],
   snackbar: {
     bottom: true,
     right: true,
